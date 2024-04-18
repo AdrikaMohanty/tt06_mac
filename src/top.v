@@ -85,8 +85,9 @@ module dlfloat_mac(clk,a,b,c);
 
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
-    //dlfloat_mult(a,b,c,clk);
-    //dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
+    
+    dlfloat_mult mul(data_a,data_b,fprod,clk);
+    dlfloat_adder add(clk,fprod,c,fadd);
     always @(posedge clk)
     begin 
         data_a <= a;
@@ -98,8 +99,8 @@ module dlfloat_mac(clk,a,b,c);
     begin 
         c <= fadd;
      end 
-    dlfloat_mult mul(data_a,data_b,fprod,clk);
-    dlfloat_adder add(clk,fprod,c,fadd);
+   // dlfloat_mult mul(data_a,data_b,fprod,clk);
+   // dlfloat_adder add(clk,fprod,c,fadd);
 
     
     //assign c = fadd;
