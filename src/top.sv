@@ -80,7 +80,7 @@ endmodule
 module dlfloat_mac(clk,a,b,c);
     input [15:0]a,b;
     input clk;
-    output bit[15:0]c;
+    output reg[15:0]c;
 
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
