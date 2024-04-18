@@ -30,7 +30,7 @@ assign data_in = {uio_in,ui_in};
 
 
 reg_wrapper wrap(clk,rst_n,data_in,wa,wb,write_en);
-dlfloat_mac MAC(clk,wa,wb,c);
+	dlfloat_mac MAC(clk,rst_n,wa,wb,c);
 
 
 assign uio_out = c[15:8];
