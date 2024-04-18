@@ -1,4 +1,5 @@
 
+`define default_netname none
 module tt_um_mac (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
@@ -80,7 +81,7 @@ endmodule
 module dlfloat_mac(clk,a,b,c);
     input [15:0]a,b;
     input clk;
-    output bit[15:0]c;
+    output reg[15:0]c;
 
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
