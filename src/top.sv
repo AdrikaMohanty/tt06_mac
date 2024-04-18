@@ -89,33 +89,50 @@ endmodule
 
 
 ///////mac/////////
-module dlfloat_mac(clk,a,b,c);
+module dlfloat_mac(clk,rst_n,a,b,c);
     input [15:0]a,b;
-    input clk;
-    output bit[15:0]c;
-
+    input clk,rst_n;
+    output reg[15:0]c;
+    reg [15:0]c_out=0;
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
     //dlfloat_mult(a,b,c,clk);
     //dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
-    always @(posedge clk)
-    begin 
+	always @(posedge clk)
+	begin 
+	if(!rst_n)
+	begin 
+		data_a <= 16'b0;
+		data_b <= 16'b0;
+		
+		c <= 16'b0;
+	end 
+	else 
+	begin 
+		
+     
         data_a <= a;
         data_b <= b;
         //fprod1 <= fprod;
         //c <= fadd;
     end 
-	always @(posedge clk)
-		begin
-			c <= fadd;
-		end
-	
-    dlfloat_mult mul(data_a,data_b,fprod,clk);
-    dlfloat_adder add(clk,fprod,c,fadd);
+    end 
+    always @ (posedge clk)
+    begin 
+    c <= fadd;
+    c_out <= c;
+    end 
+//    always @ (posedge clk)
+//    begin 
+//    c_out <= c;
+//    end 
 
     
-    //assign c = fadd;
-endmodule 
+    dlfloat_mult mul(data_a,data_b,fprod,clk);
+    dlfloat_adder add(clk,rst_n,fprod,c_out,fadd);
+    //dlfloat_adder add(clk,rst_n,fprod,c_out,fadd);
+    //assign c = rst_n ? fadd : c_out;
+endmodule
 
 
 
@@ -159,7 +176,7 @@ endmodule
 
 
 ////////////adder//////////////
-module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c);
+module dlfloat_adder(input clk,input rst_n, input reg[15:0]a, input reg[15:0]b, output reg [15:0]c);
     
     reg    [15:0] Num_shift_80; 
     reg    [5:0]  Larger_exp_80,Final_expo_80;
@@ -174,11 +191,17 @@ module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c
     reg    [15:0] c_80;
 
 
-//    always @(posedge clk)
-//    begin
-//        c<= c_80;
-//    end
+    
     assign c = c_80;
+    always @(posedge clk)
+    begin 
+    if(!rst_n)
+    begin 
+    a <= 0;
+    b <= 0;
+    c_80 <= 0;
+    end 
+    end 
     
 
 
@@ -327,3 +350,4 @@ module dlfloat_adder(input clk, input [15:0]a, input [15:0]b, output reg [15:0]c
 //    end
     
 endmodule
+
