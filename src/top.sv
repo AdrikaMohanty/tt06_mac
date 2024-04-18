@@ -22,15 +22,14 @@ wire [15:0] c;
 wire [15:0]wa,wb;
 wire write_en;
 
-
-assign uio_oe = write_en?8'b11111111:8'b00000000;
+assign uio_oe  = write_en?8'b11111111:8'b00000000;
 
 
 assign data_in = {uio_in,ui_in};
 
 
 reg_wrapper wrap(clk,rst_n,data_in,wa,wb,write_en);
-	dlfloat_mac MAC(clk,rst_n,wa,wb,c);
+dlfloat_mac MAC(clk,rst_n,wa,wb,c);
 
 
 assign uio_out = c[15:8];
@@ -40,9 +39,7 @@ assign uo_out = c[7:0];
   
 endmodule
 
-
-
-////////reg_wrapper//////////
+////////////////
 
 module reg_wrapper(
     input clk,
@@ -61,7 +58,7 @@ always @(posedge clk or negedge rst) begin
         state <= 2'b00; // Initialize state machine
         reg_a <= 16'b0; // Initialize registers
         reg_b <= 16'b0;
-        write_en <= 0;
+        write_en = 0;
     end
     else begin
         case (state)
@@ -87,8 +84,7 @@ endmodule
 
 
 
-
-///////mac/////////
+////////////
 module dlfloat_mac(clk,rst_n,a,b,c);
     input [15:0]a,b;
     input clk,rst_n;
@@ -134,49 +130,8 @@ module dlfloat_mac(clk,rst_n,a,b,c);
     //assign c = rst_n ? fadd : c_out;
 endmodule
 
-
-
-/////////////// mult ///////////////
-module dlfloat_mult(a,b,c,clk);
-    input [15:0]a,b;
-    input clk;
-    output  reg [15:0]c;
-    
-    reg [9:0]ma,mb; //1 extra because 1.smthng
-    reg [8:0] mant;
-    reg [19:0]m_temp; //after multiplication
-    reg [5:0] ea,eb,e_temp,exp;
-    reg sa,sb,s;
-    reg [16:0] temp; //1 extra bit ??
-    //reg [6:0] exp_adjust; //why ??
-
-   
-
-
-    always @(posedge clk)
-    begin 
-        ma ={1'b1,a[8:0]};
-        mb= {1'b1,b[8:0]};
-        sa = a[15];
-        sb = b[15];
-        ea = a[14:9];
-        eb = b[14:9];
-
-        e_temp = ea + eb - 31;
-        m_temp = ma * mb;
-
-        mant = m_temp[19] ? m_temp[18:10] : m_temp[17:9];
-        exp = m_temp[19] ? e_temp+1'b1 : e_temp;
-
-        s=sa ^ sb;
-
-       c =(a==0|b==0)?0:{s,exp,mant};
-    end 
-endmodule 
-
-
-////////////adder//////////////
-module dlfloat_adder(input clk,input rst_n, input reg[15:0]a, input reg[15:0]b, output reg [15:0]c);
+/////////////////
+module dlfloat_adder(input clk,input rst_n, input [15:0]a, input [15:0]b, output reg [15:0]c);
     
     reg    [15:0] Num_shift_80; 
     reg    [5:0]  Larger_exp_80,Final_expo_80;
@@ -197,8 +152,7 @@ module dlfloat_adder(input clk,input rst_n, input reg[15:0]a, input reg[15:0]b, 
     begin 
     if(!rst_n)
     begin 
-    a <= 0;
-    b <= 0;
+    
     c_80 <= 0;
     end 
     end 
@@ -351,3 +305,40 @@ module dlfloat_adder(input clk,input rst_n, input reg[15:0]a, input reg[15:0]b, 
     
 endmodule
 
+////////////////////
+module dlfloat_mult(a,b,c,clk);
+    input [15:0]a,b;
+    input clk;
+    output  reg [15:0]c;
+    
+    reg [9:0]ma,mb; //1 extra because 1.smthng
+    reg [8:0] mant;
+    reg [19:0]m_temp; //after multiplication
+    reg [5:0] ea,eb,e_temp,exp;
+    reg sa,sb,s;
+    reg [16:0] temp; //1 extra bit ??
+    //reg [6:0] exp_adjust; //why ??
+
+   
+
+
+    always @(posedge clk)
+    begin 
+        ma ={1'b1,a[8:0]};
+        mb= {1'b1,b[8:0]};
+        sa = a[15];
+        sb = b[15];
+        ea = a[14:9];
+        eb = b[14:9];
+
+        e_temp = ea + eb - 31;
+        m_temp = ma * mb;
+
+        mant = m_temp[19] ? m_temp[18:10] : m_temp[17:9];
+        exp = m_temp[19] ? e_temp+1'b1 : e_temp;
+
+        s=sa ^ sb;
+
+       c =(a==0|b==0)?0:{s,exp,mant};
+    end 
+endmodule 
