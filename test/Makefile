@@ -3,9 +3,9 @@
 
 # defaults
 SIM ?= icarus
-TOPLEVEL_LANG ?= SystemVerilog
+TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = top.sv
+PROJECT_SOURCES = top.v
 
 ifneq ($(GATES),yes)
 
