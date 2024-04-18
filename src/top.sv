@@ -97,13 +97,16 @@ module dlfloat_mac(clk,rst_n,a,b,c);
     always @(posedge clk)
     begin 
 	    if(!rst_n)
+	    begin 
 	 	data_a <= 0;
         	data_b <= 0;
+	    end 
 	    else 
+	    begin
         	data_a <= a;
         	data_b <= b;
-        //fprod1 <= fprod;
-        //c <= fadd;
+	    end 
+       
     end 
 	always @(posedge clk)
 		begin
