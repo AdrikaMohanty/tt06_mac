@@ -30,7 +30,7 @@ assign data_in = {uio_in,ui_in};
 
 
 reg_wrapper wrap(clk,rst_n,data_in,wa,wb,write_en);
-	dlfloat_mac MAC(clk,rst_n,wa,wb,c);
+dlfloat_mac MAC(clk,rst_n,wa,wb,c);
 
 
 assign uio_out = c[15:8];
@@ -93,7 +93,7 @@ module dlfloat_mac(clk,rst_n,a,b,c);
     input [15:0]a,b;
     input clk,rst_n;
     output reg[15:0]c;
-
+   reg [15:0]c_out = 0;
     reg [15:0]data_a,data_b;
     wire [15:0]fprod,fadd;
     //dlfloat_mult(a,b,c,clk);
@@ -116,14 +116,14 @@ module dlfloat_mac(clk,rst_n,a,b,c);
     end 
 	always @(posedge clk)
 		begin
-			c <= fadd;
+			c_out<= fadd;
 		end
 	
     dlfloat_mult mul(data_a,data_b,fprod,clk);
-	dlfloat_adder add(clk,rst_n,fprod,c,fadd);
+	dlfloat_adder add(clk,rst_n,fprod,c_out,fadd);
 
     
-    //assign c = fadd;
+    assign c = c_out;
 endmodule 
 
 
