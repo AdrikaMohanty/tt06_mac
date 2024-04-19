@@ -99,7 +99,7 @@ module dlfloat_mac(clk,rst_n,a,b,c);
     begin
 	data_a <= 16'b0;
 	data_b <= 16'b0;
-	//c <= 16'b0;
+	
     end 
     else 
     begin 
@@ -115,7 +115,7 @@ module dlfloat_mac(clk,rst_n,a,b,c);
 		end
 	
     dlfloat_mult mul(data_a,data_b,fprod,clk);
-	dlfloat_adder add(clk,rst_n,fprod,c,fadd);
+dlfloat_adder add(clk,rst_n,fprod,c,fadd);
 
     
     //assign c = c_out;
